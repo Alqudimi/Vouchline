@@ -80,3 +80,23 @@ Build a production-grade, local-first Python CLI/library that captures AI tool-r
 ## Definition of done
 
 The project is done when the documented quick start works from a clean virtual environment, the complete test suite and quality gates pass, a tampered artifact is rejected, a policy violation fails with a stable code, a replay is proven simulation-only, the wheel and Docker image build, and the repository contains the required open-source governance files.
+
+## Vouchline 0.2 Upgrade Scope
+
+The existing MVP plan is preserved. The release-candidate upgrade adds the following bounded slices:
+
+1. **Baseline comparison:** compare two verified artifacts by event identity, tool outcomes, policy findings, and run status; emit deterministic findings and stable exit codes.
+2. **CI reports:** render the same findings as JSON, SARIF 2.1.0, and JUnit XML without duplicating evaluation logic.
+3. **Optional adapters:** translate bounded OTLP/JSON and MCP/JSONL exports into the existing event contract. Adapters remain outside the domain core and never open outbound connections.
+4. **Optional local index:** maintain a rebuildable SQLite index as a derived read model; artifacts remain the source of truth.
+5. **Detached attestations:** add a typed signing interface with an optional standard-library-compatible backend where appropriate; document that hash chains and signatures answer different questions.
+6. **Release quality:** add contract fixtures, malformed-input tests, adapter safety tests, benchmark reporting, expanded examples, and release documentation.
+
+### Upgrade acceptance criteria
+
+- Existing v1 artifacts remain readable and verifiable.
+- Every new report is derived from the same typed findings and has golden fixtures.
+- Adapter imports are pure transformations over supplied bytes/objects and cannot invoke processes or networks.
+- SQLite rebuild is idempotent and deleting the index does not delete or mutate artifacts.
+- Signature failures are distinguishable from integrity failures and never downgrade verification.
+- README quick starts, architecture diagrams, and CI examples execute against tracked fixtures.
