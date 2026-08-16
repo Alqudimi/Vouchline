@@ -114,6 +114,20 @@ class ReplayReport(StrictModel):
     missing_responses: list[str] = Field(default_factory=list)
 
 
+class ComparisonFinding(StrictModel):
+    code: str = Field(min_length=1, max_length=100)
+    message: str = Field(min_length=1, max_length=500)
+    severity: Literal["info", "warning", "error"]
+    call_id: str | None = None
+
+
+class ComparisonReport(StrictModel):
+    passed: bool
+    baseline_artifact_id: str
+    candidate_artifact_id: str
+    findings: list[ComparisonFinding] = Field(default_factory=list)
+
+
 class VerificationReport(StrictModel):
     valid: bool
     event_count: int

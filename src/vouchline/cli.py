@@ -13,11 +13,13 @@ from rich.console import Console
 from rich.table import Table
 
 from .capture import build_artifact, load_artifact, parse_jsonl, write_artifact
+from .comparison import compare_artifacts
 from .errors import VouchlineError
 from .integrity import verify_artifact
 from .models import Policy, Producer
 from .policy import evaluate_policy
 from .replay import replay_artifact
+from .reporting import comparison_json, comparison_junit, comparison_sarif
 
 app = typer.Typer(
     name="vouchline",
@@ -150,6 +152,66 @@ def verify(
         f"[green]Valid artifact.[/green] events={result.event_count} "
         f"sha256={result.artifact_sha256}"
     )
+
+
+@app.command()
+def compare(
+    baseline: Path = typer.Argument(..., exists=True, readable=True),
+    candidate: Path = typer.Argument(..., exists=True, readable=True),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable output."),
+) -> None:
+    result = _run(
+        lambda: compare_artifacts(load_artifact(baseline), load_artifact(candidate)),
+        json_output,
+    )
+    if json_output:
+        _output(result, True)
+    else:
+        console.print(
+            f"[green]Comparison passed.[/green] findings={len(result.findings)}"
+            if result.passed
+            else f"[red]Comparison failed.[/red] findings={len(result.findings)}"
+        )
+        for finding in result.findings:
+            console.print(f"  [{finding.severity}] {finding.code}: {finding.message}")
+    if not result.passed:
+        raise typer.Exit(code=4)
+
+
+@app.command()
+def report(
+    baseline: Path = typer.Argument(..., exists=True, readable=True),
+    candidate: Path = typer.Argument(..., exists=True, readable=True),
+    format: str = typer.Option("json", "--format", help="json, sarif, or junit."),
+    output: Path | None = typer.Option(None, "--output", "-o", help="Write report to a file."),
+) -> None:
+    def operation() -> tuple[object, bool]:
+        result = compare_artifacts(load_artifact(baseline), load_artifact(candidate))
+        normalized = format.lower()
+        if normalized == "json":
+            payload: object = comparison_json(result)
+            rendered = _json_dump(payload)
+        elif normalized == "sarif":
+            payload = comparison_sarif(result, artifact_path=str(candidate))
+            rendered = _json_dump(payload)
+        elif normalized == "junit":
+            payload = comparison_junit(result)
+            rendered = payload
+        else:
+            from .errors import InputError
+
+            raise InputError(
+                "format must be one of json, sarif, or junit", details={"format": format}
+            )
+        if output is not None:
+            output.write_text(rendered + "\n", encoding="utf-8")
+        return rendered, result.passed
+
+    rendered, passed = _run(operation, False)
+    if output is None:
+        typer.echo(rendered)
+    if not passed:
+        raise typer.Exit(code=4)
 
 
 @app.command()
