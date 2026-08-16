@@ -2,6 +2,23 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.2.0] — 2026-08-16
+
+### Added
+
+- Deterministic baseline comparison for verified artifacts, including tool, outcome, event-count, and run-status regressions.
+- JSON, SARIF 2.1.0, and JUnit XML report renderers for CI integrations.
+- Pure OTLP/JSON span normalization adapter for GenAI/MCP-style tool spans, with bounded input handling and no network access.
+- Public Python exports for comparison and OTLP normalization.
+- Regression tests for comparison failures, report formats, malformed input, and adapter behavior.
+
+### Boundaries
+
+- MCP and OTLP **network receivers** are not part of `0.2.0`; OTLP support is a pure JSON transformation adapter.
+- Replay is simulation-only; live execution is not implemented.
+- Hash chains are not signatures or producer authentication.
+- SQLite indexing, detached signatures, and hosted services remain future extensions.
+
 ## [0.1.0] — 2026-08-16
 
 ### Added
@@ -16,7 +33,6 @@ All notable changes to Vouchline are documented here.
 
 ### Known boundaries
 
-- MCP and OTLP import adapters are not part of `0.1.0`.
 - Replay is simulation-only; live execution is not implemented.
 - Hash chains are not signatures or producer authentication.
 - There is no server, database, web UI, or hosted registry in this release.

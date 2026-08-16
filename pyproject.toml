@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vouchline"
-version = "0.1.0"
+version = "0.2.0"
 description = "Portable, replay-safe evidence artifacts for AI tool runs."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,7 +12,7 @@ license = { file = "LICENSE" }
 authors = [{ name = "Abdulaziz Alqudimi" }]
 keywords = ["ai-agents", "tool-calling", "provenance", "replay", "mcp", "testing", "security"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",

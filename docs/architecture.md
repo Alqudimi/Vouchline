@@ -133,9 +133,15 @@ The artifact hash chain detects modification after capture. It does not authenti
 
 Capture and verification are linear in event count, with one canonical serialization and one SHA-256 digest per event. Redaction is linear in the number of JSON nodes. The CLI streams JSONL input and enforces configurable event and byte limits before materializing the artifact. MVP benchmarks cover capture, verify, and replay for 1,000 and 10,000 events.
 
+## Release-candidate extensions
+
+Vouchline 0.2 adds a comparison and reporting layer above verified artifacts. `compare_artifacts` verifies both inputs first, then compares event counts, tool identities, tool outcomes, and terminal run status. It produces typed `ComparisonFinding` values; JSON, SARIF, and JUnit are renderers over that same report and do not implement separate policy logic.
+
+The `adapters.otlp_json` module is a pure transformation boundary. It accepts an already-loaded OTLP/JSON object, extracts bounded span data, and maps tool spans to request/response events or preserves other spans as `extension.otlp.span`. It does not import an OTLP SDK, open a receiver, make network calls, or execute tools. Persistence and hashing remain the responsibility of the normal capture path, so redaction still occurs before artifact writing.
+
 ## Extension strategy
 
-The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. Future adapters can map MCP JSON-RPC, OTLP GenAI spans, Claude/Codex hooks, or Langfuse exports into the same event vocabulary. Future sinks can write SQLite or object storage. Future outputs can include SARIF, JUnit, and an HTML report without coupling the core to a web server.
+The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. Future adapters can map MCP JSON-RPC, Claude/Codex hooks, or Langfuse exports into the same event vocabulary. Future sinks can write SQLite or object storage. Future outputs may include an HTML report without coupling the core to a web server. OTLP/JSON normalization and SARIF/JUnit outputs are already available in 0.2.
 
 ## Non-functional requirements
 
@@ -153,7 +159,7 @@ The public artifact contract is versioned. Additive fields are preferred; removi
 
 ### Advanced features
 
-The next release family can add MCP and OTLP adapters, SQLite indexing, signed attestations, SARIF/JUnit output, baseline comparison, and a small local web viewer. Those features must consume the stable artifact contract rather than alter the core replay safety guarantees.
+The next release family can add an MCP export importer, SQLite indexing, signed attestations, and a small local web viewer. Those features must consume the stable artifact contract rather than alter the core replay safety guarantees.
 
 ### Future
 

@@ -5,7 +5,7 @@
 [![CI](https://github.com/Alqudimi/Vouchline/actions/workflows/ci.yml/badge.svg)](https://github.com/Alqudimi/Vouchline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE)
-[![Status](https://img.shields.io/badge/status-alpha-orange)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-release--candidate-blue)](CHANGELOG.md)
 
 Vouchline is a local-first Python library and CLI that turns an AI agent or tool execution into a **redacted, hash-chained evidence artifact**. The artifact can be verified after transport, replayed in simulation without executing side effects, and used as a deterministic CI policy input.
 
@@ -33,6 +33,9 @@ It complements protocol inspectors, observability platforms, security gateways, 
 | **Deterministic policies** | Deny tools, require tools, cap tool calls, and deny response statuses. |
 | **Portable contract** | Versioned JSON artifact with a documented schema and no database requirement. |
 | **Automation-ready CLI** | Human output for developers and stable JSON/exit codes for CI. |
+| **Baseline comparison** | Compare a known-good artifact with a candidate and detect tool, outcome, and run-status regressions. |
+| **CI reports** | Export deterministic comparison findings as JSON, SARIF 2.1.0, or JUnit XML. |
+| **OTLP normalization** | Pure OTLP/JSON adapter for GenAI/MCP-style spans; no network access is opened by the adapter. |
 | **Small core** | Framework-neutral domain layer with adapters kept outside the replay boundary. |
 
 ## Quick start
@@ -48,6 +51,10 @@ vouchline capture examples/sample_run.jsonl --output .demo/run.json --run-id dem
 vouchline verify .demo/run.json
 vouchline replay .demo/run.json
 vouchline assert .demo/run.json --policy examples/policy.json
+
+# Compare two verified runs and produce a CI report
+vouchline compare .demo/baseline.json .demo/candidate.json --json
+vouchline report .demo/baseline.json .demo/candidate.json --format sarif --output .demo/vouchline.sarif
 ```
 
 The sample input contains a deliberately fake bearer value. Vouchline reports one redacted field and persists only `[REDACTED]`; no real credential is used.
@@ -91,6 +98,8 @@ Read [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 | `vouchline verify ARTIFACT` | Validate schema, event ordering, hash chain, and manifest. |
 | `vouchline replay ARTIFACT` | Simulate the recorded tool path without side effects. |
 | `vouchline assert ARTIFACT --policy POLICY.json` | Run deterministic policy assertions. |
+| `vouchline compare BASELINE CANDIDATE` | Detect deterministic regressions between verified artifacts. |
+| `vouchline report BASELINE CANDIDATE --format json|sarif|junit` | Render comparison findings for CI systems. |
 | `vouchline version` | Print the installed version. |
 
 Exit codes are stable: `0` means pass, `2` means invalid input, `3` means integrity failure, `4` means replay or policy failure, and `5` means an unexpected internal error.
@@ -109,7 +118,7 @@ make bench
 make demo
 ```
 
-The test suite covers valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, CLI JSON output, exit codes, and the simulation-only replay invariant.
+The test suite covers valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant.
 
 The benchmark measures verification and simulation replay for 1,000 and 10,000 events:
 
@@ -139,9 +148,13 @@ The core models, canonicalization, redaction, integrity, replay, and policy modu
 
 ## Roadmap
 
+### Delivered in 0.2
+
+Vouchline now includes baseline comparison, deterministic JSON/SARIF/JUnit reports, and a pure OTLP/JSON normalization adapter. These features consume the stable artifact contract and preserve simulation-only replay as the default.
+
 ### Next
 
-The next release family can add MCP and OTLP import adapters, golden baseline comparison, SARIF/JUnit reports, SQLite indexing, and detached signatures. Each feature must consume the stable artifact contract and preserve simulation-only replay as the default.
+The next release family can add an MCP export importer, a rebuildable SQLite read index, and detached signature providers. Each feature must consume the stable artifact contract and preserve simulation-only replay as the default.
 
 ### Later
 
