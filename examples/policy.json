@@ -1,0 +1,6 @@
+{
+  "deny_tools": ["delete_file", "send_email"],
+  "max_tool_calls": 5,
+  "require_tools": ["search_documents"],
+  "deny_statuses": ["error", "timeout"]
+}

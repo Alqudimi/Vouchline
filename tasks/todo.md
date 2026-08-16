@@ -1,0 +1,21 @@
+# Vouchline build checklist
+
+- [ ] Contract: typed event/artifact/policy/report models
+- [ ] Errors: stable exception hierarchy and exit codes
+- [ ] Canonical JSON and SHA-256 hash chain
+- [ ] Recursive redaction and leak guards
+- [ ] JSONL capture with bounded input
+- [ ] Artifact verification and manifest checks
+- [ ] Safe simulation replay
+- [ ] Deterministic policy evaluator
+- [ ] CLI with human and JSON output
+- [ ] Examples and demo fixtures
+- [ ] Unit/integration/edge-case tests
+- [ ] Packaging and entry point
+- [ ] Docker runtime recipe
+- [ ] README and docs
+- [ ] Governance files
+- [ ] CI/CD workflows
+- [ ] Benchmarks
+- [ ] Clean-install verification
+- [ ] GitHub publication and action verification

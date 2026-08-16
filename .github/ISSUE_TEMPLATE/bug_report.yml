@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible defect in Vouchline
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include real credentials or private traces. Redact all sensitive values first.
+  - type: input
+    id: version
+    attributes:
+      label: Vouchline version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the command and a synthetic input or fixture.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

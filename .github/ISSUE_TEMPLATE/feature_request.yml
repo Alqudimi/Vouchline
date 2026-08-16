@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a focused improvement to the evidence contract or developer experience
+title: "feat: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who has the problem, and what is difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the smallest useful change and which layer owns it.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable behaviors that can be tested.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Boundary check
+      options:
+        - label: This does not require live side effects in the default replay path.
+          required: true
+        - label: This does not add a provider-specific dependency to the core.
+          required: true
