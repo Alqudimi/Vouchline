@@ -2,6 +2,13 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.2.1] — 2026-08-17
+
+### Fixed
+
+- Map informational comparison findings to SARIF `note`, which is a valid SARIF level, and add a regression test for the mapping.
+- Keep package metadata and the public `__version__` synchronized at `0.2.1`.
+
 ## [0.2.0] — 2026-08-16
 
 ### Added

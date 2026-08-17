@@ -19,7 +19,13 @@ def comparison_sarif(
         results.append(
             {
                 "ruleId": finding.code,
-                "level": "error" if finding.severity == "error" else finding.severity,
+                "level": (
+                    "error"
+                    if finding.severity == "error"
+                    else "warning"
+                    if finding.severity == "warning"
+                    else "note"
+                ),
                 "message": {"text": finding.message},
                 "locations": [{"physicalLocation": {"artifactLocation": {"uri": artifact_path}}}],
             }

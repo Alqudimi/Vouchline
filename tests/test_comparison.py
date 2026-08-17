@@ -6,6 +6,8 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from vouchline.cli import app
+from vouchline.models import ComparisonFinding, ComparisonReport
+from vouchline.reporting import comparison_sarif
 
 runner = CliRunner()
 
@@ -129,3 +131,21 @@ def test_report_rejects_unknown_format(tmp_path: Path) -> None:
     )
     assert result.exit_code == 2
     assert "INVALID_INPUT" in result.output
+
+
+def test_sarif_maps_info_to_valid_note_level() -> None:
+    report = ComparisonReport(
+        passed=True,
+        baseline_artifact_id="baseline",
+        candidate_artifact_id="candidate",
+        findings=[
+            ComparisonFinding(
+                code="INFO_ONLY",
+                message="informational finding",
+                severity="info",
+            )
+        ],
+    )
+    payload = comparison_sarif(report)
+    result = payload["runs"][0]["results"][0]
+    assert result["level"] == "note"
