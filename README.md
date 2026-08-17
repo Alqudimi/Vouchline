@@ -5,7 +5,7 @@
 [![CI](https://github.com/Alqudimi/Vouchline/actions/workflows/ci.yml/badge.svg)](https://github.com/Alqudimi/Vouchline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE)
-[![Status](https://img.shields.io/badge/status-release--candidate-blue)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-beta-blue)](CHANGELOG.md)
 
 Vouchline is a local-first Python library and CLI that turns an AI agent or tool execution into a **redacted, hash-chained evidence artifact**. The artifact can be verified after transport, replayed in simulation without executing side effects, and used as a deterministic CI policy input.
 
@@ -118,7 +118,7 @@ make bench
 make demo
 ```
 
-The test suite covers valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant.
+The test suite contains **57 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.94% coverage** with a 90% enforced floor.
 
 The benchmark measures verification and simulation replay for 1,000 and 10,000 events:
 
@@ -144,7 +144,7 @@ JSONL / adapter input
                                       ↘ ReportRenderer
 ```
 
-The core models, canonicalization, redaction, integrity, replay, and policy modules do not depend on a web framework or a model provider. File I/O and the CLI are adapters around those use cases. This keeps the evidence contract reusable by future MCP, OTLP, hook, SQLite, or object-storage adapters.
+The core models, canonicalization, redaction, integrity, replay, and policy modules do not depend on a web framework or a model provider. File I/O, the CLI, and OTLP normalization are adapters around those use cases. This keeps the evidence contract reusable by future MCP, hook, SQLite, or object-storage adapters.
 
 ## Roadmap
 
