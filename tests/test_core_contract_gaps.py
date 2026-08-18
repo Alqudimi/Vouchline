@@ -6,13 +6,13 @@ replay call-id contract, and adapter defensive branches.
 from __future__ import annotations
 
 import datetime as _dt
+import importlib.util
 import json
 from pathlib import Path
 from typing import Any
 from unittest import mock
 
 import pytest
-from tests.test_cli_contract_gaps import _build_events, _write_artifact
 from typer.testing import CliRunner
 
 from vouchline.adapters import spans_to_events
@@ -25,6 +25,18 @@ from vouchline.errors import InputError, ReplayError
 from vouchline.models import InputEvent, Producer
 from vouchline.replay import replay_artifact
 from vouchline.reporting import comparison_junit
+
+# Load shared CLI fixtures without requiring the tests package to be
+# importable (CI runs tests from the repo root where tests is not a
+# package, so a direct `from tests...` import fails there).
+_fixtures_spec = importlib.util.spec_from_file_location(
+    "_cli_fixtures",
+    Path(__file__).parent / "test_cli_contract_gaps.py",
+)
+_fixtures = importlib.util.module_from_spec(_fixtures_spec)
+_fixtures_spec.loader.exec_module(_fixtures)
+_build_events = _fixtures._build_events
+_write_artifact = _fixtures._write_artifact
 
 runner = CliRunner()
 
