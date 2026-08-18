@@ -139,9 +139,11 @@ Vouchline 0.2 adds a comparison and reporting layer above verified artifacts. `c
 
 The `adapters.otlp_json` module is a pure transformation boundary. It accepts an already-loaded OTLP/JSON object, extracts bounded span data, and maps tool spans to request/response events or preserves other spans as `extension.otlp.span`. It does not import an OTLP SDK, open a receiver, make network calls, or execute tools. Persistence and hashing remain the responsibility of the normal capture path, so redaction still occurs before artifact writing.
 
+The `adapters.mcp_jsonl` module is the same kind of pure boundary for MCP exports. It accepts already-loaded MCP JSON-RPC rows, maps `notifications/tools/call` and `notifications/tools/call_result` into the core `tool.requested` and `tool.responded` vocabulary, and preserves unrecognised notifications as `extension.mcp.notification` events with bounded row limits and provenance metadata. It does not import an MCP SDK, open a transport, make network calls, or execute tools.
+
 ## Extension strategy
 
-The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. Future adapters can map MCP JSON-RPC, Claude/Codex hooks, or Langfuse exports into the same event vocabulary. Future sinks can write SQLite or object storage. Future outputs may include an HTML report without coupling the core to a web server. OTLP/JSON normalization and SARIF/JUnit outputs are already available in 0.2.
+The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. The MCP JSON-RPC vocabulary is already mapped by `adapters.mcp_jsonl`. Future adapters can map Claude/Codex hooks or Langfuse exports into the same event vocabulary. Future sinks can write SQLite or object storage. Future outputs may include an HTML report without coupling the core to a web server. OTLP/JSON and MCP/JSONL normalization plus SARIF/JUnit outputs are already available.
 
 ## Non-functional requirements
 
@@ -159,7 +161,7 @@ The public artifact contract is versioned. Additive fields are preferred; removi
 
 ### Advanced features
 
-The next release family can add an MCP export importer, SQLite indexing, signed attestations, and a small local web viewer. Those features must consume the stable artifact contract rather than alter the core replay safety guarantees.
+The next release family can add SQLite indexing, signed attestations, and a small local web viewer. MCP export import is covered by `adapters.mcp_jsonl`; an MCP network transport with a separately reviewed security model remains outside the adapter and outside MVP.
 
 ### Future
 

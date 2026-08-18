@@ -25,7 +25,7 @@
 - [x] Baseline artifact comparison with deterministic findings
 - [x] JSON, SARIF 2.1.0, and JUnit XML renderers
 - [x] OTLP/JSON adapter with bounded GenAI/MCP attribute mapping
-- [ ] MCP/JSONL importer that performs no network access (future)
+- [x] MCP/JSONL importer that performs no network access (added in 0.3.0 as adapters.mcp_jsonl)
 - [x] Contract fixtures for adapter normalization and schema compatibility
 - [ ] Optional rebuildable SQLite index (future)
 - [ ] Optional detached attestation interface and verification errors (future)
