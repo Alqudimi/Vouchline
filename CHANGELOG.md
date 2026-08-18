@@ -2,6 +2,12 @@
 
 All notable changes to Vouchline are documented here.
 
+## [Unreleased]
+
+### Added
+
+- Close the remaining test-coverage gaps across `cli`, `capture`, `replay`, `comparison`, `canonical`, `reporting`, and the OTLP adapter, raising suite coverage to 98% with 18 new offline tests covering error rendering, report formatting, and input-validation branches.
+
 ## [0.2.2] — 2026-08-18
 
 ### Fixed
