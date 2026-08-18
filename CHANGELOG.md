@@ -2,6 +2,12 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.2.2] — 2026-08-18
+
+### Fixed
+
+- Use SPDX `MIT` and `license-files` metadata so isolated builds avoid deprecated setuptools license configuration warnings.
+
 ## [0.2.1] — 2026-08-17
 
 ### Fixed
