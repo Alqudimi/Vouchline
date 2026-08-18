@@ -2,6 +2,16 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.3.0] — unreleased
+
+### Added
+
+- Pure MCP JSONL adapter that normalizes MCP JSON-RPC tool call and result notifications into the core `tool.requested` and `tool.responded` vocabulary, preserving unknown notifications as `extension.mcp.notification` events, with bounded row limits, validation failures with stable error codes, provenance metadata, and no network access.
+
+### Boundaries
+
+- The MCP adapter is a pure JSON transformation; MCP **network receivers** are not implemented. Captured rows are expected to be redacted before persistence by the standard capture path.
+
 ## [0.2.2] — 2026-08-18
 
 ### Fixed
