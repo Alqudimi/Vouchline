@@ -36,6 +36,7 @@ It complements protocol inspectors, observability platforms, security gateways, 
 | **Baseline comparison** | Compare a known-good artifact with a candidate and detect tool, outcome, and run-status regressions. |
 | **CI reports** | Export deterministic comparison findings as JSON, SARIF 2.1.0, or JUnit XML. |
 | **OTLP normalization** | Pure OTLP/JSON adapter for GenAI/MCP-style spans; no network access is opened by the adapter. |
+| **MCP transcript import** | Normalize captured MCP JSON-RPC JSONL into Vouchline events without connecting to a server. |
 | **Small core** | Framework-neutral domain layer with adapters kept outside the replay boundary. |
 
 ## Quick start
@@ -55,6 +56,9 @@ vouchline assert .demo/run.json --policy examples/policy.json
 # Compare two verified runs and produce a CI report
 vouchline compare .demo/baseline.json .demo/candidate.json --json
 vouchline report .demo/baseline.json .demo/candidate.json --format sarif --output .demo/vouchline.sarif
+
+# Normalize a captured MCP JSON-RPC transcript; this is offline and side-effect-free
+vouchline normalize-mcp examples/mcp_transcript.jsonl --output .demo/mcp-events.jsonl
 ```
 
 The sample input contains a deliberately fake bearer value. Vouchline reports one redacted field and persists only `[REDACTED]`; no real credential is used.
@@ -100,6 +104,7 @@ Read [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 | `vouchline assert ARTIFACT --policy POLICY.json` | Run deterministic policy assertions. |
 | `vouchline compare BASELINE CANDIDATE` | Detect deterministic regressions between verified artifacts. |
 | `vouchline report BASELINE CANDIDATE --format json|sarif|junit` | Render comparison findings for CI systems. |
+| `vouchline normalize-mcp INPUT --output EVENTS.jsonl` | Convert captured MCP JSON-RPC messages into Vouchline events without network access. |
 | `vouchline version` | Print the installed version. |
 
 Exit codes are stable: `0` means pass, `2` means invalid input, `3` means integrity failure, `4` means replay or policy failure, and `5` means an unexpected internal error.
@@ -118,7 +123,7 @@ make bench
 make demo
 ```
 
-The test suite contains **57 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.94% coverage** with a 90% enforced floor.
+The test suite contains **63 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP and MCP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.03% coverage** with a 90% enforced floor.
 
 The benchmark measures verification and simulation replay for 1,000 and 10,000 events:
 
@@ -148,13 +153,13 @@ The core models, canonicalization, redaction, integrity, replay, and policy modu
 
 ## Roadmap
 
-### Delivered in 0.2
+### Delivered in 0.3
 
-Vouchline now includes baseline comparison, deterministic JSON/SARIF/JUnit reports, and a pure OTLP/JSON normalization adapter. These features consume the stable artifact contract and preserve simulation-only replay as the default.
+Vouchline now includes baseline comparison, deterministic JSON/SARIF/JUnit reports, pure OTLP/JSON normalization, and offline MCP JSON-RPC transcript normalization. These features consume the stable artifact contract and preserve simulation-only replay as the default.
 
 ### Next
 
-The next release family can add an MCP export importer, a rebuildable SQLite read index, and detached signature providers. Each feature must consume the stable artifact contract and preserve simulation-only replay as the default.
+The next release family can add a rebuildable SQLite read index, detached signature providers, and a local viewer. Each feature must consume the stable artifact contract and preserve simulation-only replay as the default.
 
 ### Later
 

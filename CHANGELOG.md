@@ -2,6 +2,21 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.3.0] — 2026-08-18
+
+### Added
+
+- Pure MCP JSON-RPC transcript normalization into the Vouchline event contract.
+- `vouchline normalize-mcp INPUT --output EVENTS.jsonl` for local and CI pipelines.
+- Bounded MCP message handling, invalid-record diagnostics, and regression coverage for requests, results, errors, notifications, and CLI failures.
+- Public `messages_to_events` export for library integrations.
+
+### Boundaries
+
+- The MCP adapter reads already-captured JSONL; it never connects to an MCP server or executes a tool.
+- Redaction and integrity remain owned by the normal capture path after normalization.
+- SQLite indexing, detached attestations, and hosted services remain future extensions.
+
 ## [0.2.2] — 2026-08-18
 
 ### Fixed

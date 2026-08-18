@@ -1,6 +1,6 @@
 """Vouchline: portable, replay-safe evidence artifacts for AI tool runs."""
 
-from .adapters import spans_to_events
+from .adapters import messages_to_events, spans_to_events
 from .capture import build_artifact, load_artifact, parse_jsonl, write_artifact
 from .comparison import compare_artifacts
 from .integrity import verify_artifact
@@ -22,7 +22,8 @@ __all__ = [
     "replay_artifact",
     "verify_artifact",
     "write_artifact",
+    "messages_to_events",
     "spans_to_events",
 ]
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"

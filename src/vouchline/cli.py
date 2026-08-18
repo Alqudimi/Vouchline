@@ -12,6 +12,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from .adapters import messages_to_events
 from .capture import build_artifact, load_artifact, parse_jsonl, write_artifact
 from .comparison import compare_artifacts
 from .errors import VouchlineError
@@ -137,6 +138,71 @@ def capture(
     for key, value in result.items():
         table.add_row(key, str(value))
     console.print(table)
+
+
+@app.command("normalize-mcp")
+def normalize_mcp(
+    input_path: str = typer.Argument(
+        ..., metavar="INPUT", help="MCP JSONL path, or '-' for stdin."
+    ),
+    output: Path = typer.Option(..., "--output", "-o", help="Destination normalized JSONL file."),
+    max_messages: int = typer.Option(10_000, min=1, help="Maximum JSON-RPC messages."),
+    json_output: bool = typer.Option(False, "--json", help="Emit machine-readable output."),
+) -> None:
+    def operation() -> dict[str, Any]:
+        stream, should_close = _open_input(input_path)
+        messages: list[dict[str, Any]] = []
+        try:
+            for line_number, line in enumerate(stream, start=1):
+                if not line.strip():
+                    continue
+                if len(messages) >= max_messages:
+                    from .errors import LimitError
+
+                    raise LimitError(
+                        "MCP message limit exceeded",
+                        details={"max_messages": max_messages, "line": line_number},
+                    )
+                try:
+                    value = json.loads(line)
+                except json.JSONDecodeError as error:
+                    from .errors import InputError
+
+                    raise InputError(
+                        "MCP input must contain one JSON object per line",
+                        details={"line": line_number},
+                    ) from error
+                if not isinstance(value, dict):
+                    from .errors import InputError
+
+                    raise InputError(
+                        "MCP JSONL records must be objects", details={"line": line_number}
+                    )
+                messages.append(value)
+        finally:
+            if should_close:
+                stream.close()
+        events = messages_to_events(messages, max_messages=max_messages)
+        output.write_text(
+            "\n".join(json.dumps(event, ensure_ascii=False, sort_keys=True) for event in events)
+            + ("\n" if events else ""),
+            encoding="utf-8",
+        )
+        return {
+            "input": input_path,
+            "output": str(output),
+            "message_count": len(messages),
+            "event_count": len(events),
+        }
+
+    result = _run(operation, json_output)
+    if json_output:
+        _output(result, True)
+    else:
+        console.print(
+            "[green]MCP transcript normalized.[/green] "
+            f"messages={result['message_count']} events={result['event_count']}"
+        )
 
 
 @app.command()

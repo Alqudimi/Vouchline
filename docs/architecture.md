@@ -141,7 +141,7 @@ The `adapters.otlp_json` module is a pure transformation boundary. It accepts an
 
 ## Extension strategy
 
-The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. Future adapters can map MCP JSON-RPC, Claude/Codex hooks, or Langfuse exports into the same event vocabulary. Future sinks can write SQLite or object storage. Future outputs may include an HTML report without coupling the core to a web server. OTLP/JSON normalization and SARIF/JUnit outputs are already available in 0.2.
+The public artifact contract is versioned. Additive fields are preferred; removing or changing required fields requires a new schema version. MCP JSON-RPC and OTLP/JSON normalization now map captured external data into the same event vocabulary without network access. Future adapters can map Claude/Codex hooks or Langfuse exports, while future sinks can write SQLite or object storage. Future outputs may include an HTML report without coupling the core to a web server.
 
 ## Non-functional requirements
 
@@ -159,7 +159,7 @@ The public artifact contract is versioned. Additive fields are preferred; removi
 
 ### Advanced features
 
-The next release family can add an MCP export importer, SQLite indexing, signed attestations, and a small local web viewer. Those features must consume the stable artifact contract rather than alter the core replay safety guarantees.
+The next release family can add SQLite indexing, signed attestations, and a small local web viewer. Those features must consume the stable artifact contract rather than alter the core replay safety guarantees.
 
 ### Future
 
