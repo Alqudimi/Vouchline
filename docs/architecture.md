@@ -121,11 +121,11 @@ All public failures use a typed exception hierarchy and stable machine-readable 
 | 4 | Replay or policy assertion failed. |
 | 5 | Unexpected internal failure. |
 
-CLI output uses a human message plus a JSON form with `code`, `message`, and `details`. Internal tracebacks are shown only with `--debug`.
+CLI output uses a human message plus a JSON form with `code`, `message`, and `details`. Unexpected failures are normalized to a stable internal-error response; the MVP does not expose a `--debug` flag or raw tracebacks through the CLI.
 
 ## Security model
 
-The threat model treats artifacts and event streams as untrusted input. The parser limits event count and serialized size, rejects path-like execution instructions as behavior rather than executing them, avoids unsafe deserialization, canonicalizes data before hashing, and never evaluates arbitrary expressions from policy files. JSON is the only persisted interchange format in MVP.
+The threat model treats artifacts and event streams as untrusted input. The parser limits event count and serialized size, treats path-like or command-like content as inert data rather than executing it, avoids unsafe deserialization, canonicalizes data before hashing, and never evaluates arbitrary expressions from policy files. JSON is the only persisted interchange format in MVP.
 
 The artifact hash chain detects modification after capture. It does not authenticate the producer. A future signing extension may add detached signatures without changing the event contract.
 
