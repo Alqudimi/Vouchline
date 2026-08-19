@@ -12,7 +12,7 @@ The package exposes both `vouchline` and `python -m vouchline` entry points. No 
 
 ## Configuration
 
-The CLI takes configuration through explicit flags and JSON policy files. There is no implicit `.env` loading and no secret lookup in the core. `capture` accepts `--max-events` and `--max-bytes` limits. `assert` accepts a JSON file with `deny_tools`, `max_tool_calls`, `require_tools`, and `deny_statuses`.
+The CLI takes configuration through explicit flags and JSON policy files. There is no implicit `.env` loading and no secret lookup in the core. `capture` accepts `--max-events` and `--max-bytes` limits; `normalize-mcp` accepts `--max-messages` and `--max-bytes` limits. `assert` accepts a JSON file with `deny_tools`, `max_tool_calls`, `require_tools`, and `deny_statuses`.
 
 A future server or adapter may add environment configuration, but it must preserve secure defaults and document precedence explicitly.
 
@@ -40,7 +40,7 @@ Use `parse_jsonl` at an input boundary, `build_artifact` to create a versioned a
 
 An adapter should live outside the domain modules and translate an external event source into `InputEvent` objects. It must validate external payloads, retain the source format/version in producer metadata, redact before persistence, and provide offline fixtures. An adapter must not add network or process execution to `replay.py`.
 
-For MCP, an adapter would map tool requests and results into the core `tool.requested` and `tool.responded` events. For OTLP, it would map span attributes into the same contract while preserving source IDs in the payload. These adapters are roadmap work and should not be represented as implemented until they have fixtures and integration tests.
+The implemented MCP adapter in `vouchline.adapters.mcp_jsonl` maps offline JSON-RPC tool requests and results into the core `tool.requested` and `tool.responded` events, while preserving other messages as `extension.mcp.message`. The `normalize-mcp` CLI command enforces message and UTF-8 byte limits before writing normalized JSONL. The OTLP adapter maps span attributes into the same contract while preserving source IDs in the payload. Both adapters are pure transformations: they do not connect to servers, open sockets, execute processes, or bypass the normal capture redaction boundary.
 
 ## Testing
 

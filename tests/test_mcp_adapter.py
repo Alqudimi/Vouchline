@@ -100,3 +100,28 @@ def test_normalize_mcp_cli_rejects_invalid_json(tmp_path) -> None:
     )
     assert result.exit_code == 2
     assert "INVALID_INPUT" in result.output
+
+
+def test_normalize_mcp_cli_enforces_byte_limit(tmp_path) -> None:
+    from typer.testing import CliRunner
+
+    from vouchline.cli import app
+
+    source = tmp_path / "large.jsonl"
+    output = tmp_path / "events.jsonl"
+    payload = '{"jsonrpc":"2.0","method":"ping","padding":"' + "x" * 100 + '"}\n'
+    source.write_text(payload, encoding="utf-8")
+    result = CliRunner().invoke(
+        app,
+        [
+            "normalize-mcp",
+            str(source),
+            "--output",
+            str(output),
+            "--max-bytes",
+            "10",
+            "--json",
+        ],
+    )
+    assert result.exit_code == 2, result.output
+    assert "LIMIT_EXCEEDED" in result.output

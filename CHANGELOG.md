@@ -2,6 +2,13 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.3.1] — 2026-08-19
+
+### Fixed
+
+- Enforce a UTF-8 byte limit in the `normalize-mcp` CLI before materializing transcript messages.
+- Document the implemented MCP/OTLP adapters and their redaction boundary accurately.
+
 ## [0.3.0] — 2026-08-18
 
 ### Added

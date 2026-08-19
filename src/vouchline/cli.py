@@ -147,13 +147,23 @@ def normalize_mcp(
     ),
     output: Path = typer.Option(..., "--output", "-o", help="Destination normalized JSONL file."),
     max_messages: int = typer.Option(10_000, min=1, help="Maximum JSON-RPC messages."),
+    max_bytes: int = typer.Option(25 * 1024 * 1024, min=1, help="Maximum UTF-8 input bytes."),
     json_output: bool = typer.Option(False, "--json", help="Emit machine-readable output."),
 ) -> None:
     def operation() -> dict[str, Any]:
         stream, should_close = _open_input(input_path)
         messages: list[dict[str, Any]] = []
+        consumed_bytes = 0
         try:
             for line_number, line in enumerate(stream, start=1):
+                consumed_bytes += len(line.encode("utf-8"))
+                if consumed_bytes > max_bytes:
+                    from .errors import LimitError
+
+                    raise LimitError(
+                        "MCP input byte limit exceeded",
+                        details={"max_bytes": max_bytes, "line": line_number},
+                    )
                 if not line.strip():
                     continue
                 if len(messages) >= max_messages:

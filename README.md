@@ -123,7 +123,7 @@ make bench
 make demo
 ```
 
-The test suite contains **63 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP and MCP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.03% coverage** with a 90% enforced floor.
+The test suite contains **64 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP and MCP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.08% coverage** with a 90% enforced floor.
 
 The benchmark measures verification and simulation replay for 1,000 and 10,000 events:
 
