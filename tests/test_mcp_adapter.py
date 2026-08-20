@@ -39,14 +39,27 @@ def test_mcp_error_response_and_notification_are_normalized() -> None:
             {
                 "jsonrpc": "2.0",
                 "id": "x",
+                "method": "tools/call",
+                "params": {"name": "search"},
+            },
+            {
+                "jsonrpc": "2.0",
+                "id": "x",
                 "error": {"code": -32603, "message": "tool failed"},
             },
         ]
     )
     assert events[0]["kind"] == "extension.mcp.message"
     assert events[0]["payload"]["method"] == "notifications/initialized"
-    assert events[1]["kind"] == "tool.responded"
-    assert events[1]["payload"]["status"] == "error"
+    assert events[1]["kind"] == "tool.requested"
+    assert events[2]["kind"] == "tool.responded"
+    assert events[2]["payload"]["status"] == "error"
+
+
+def test_mcp_generic_response_is_preserved_as_extension() -> None:
+    events = messages_to_events([{"jsonrpc": "2.0", "id": 1, "result": {"capabilities": {}}}])
+    assert events[0]["kind"] == "extension.mcp.message"
+    assert events[0]["payload"]["has_result"] is True
 
 
 def test_mcp_invalid_ids_are_preserved_as_extensions() -> None:

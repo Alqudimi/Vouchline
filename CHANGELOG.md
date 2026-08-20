@@ -2,6 +2,14 @@
 
 All notable changes to Vouchline are documented here.
 
+## [0.3.2] — 2026-08-20
+
+### Fixed
+
+- Classify an MCP JSON-RPC response as `tool.responded` only when a matching `tools/call` request is pending.
+- Preserve unrelated responses such as `initialize` and `tools/list` as `extension.mcp.message` events.
+- Add regression coverage for generic responses and error responses.
+
 ## [0.3.1] — 2026-08-19
 
 ### Fixed

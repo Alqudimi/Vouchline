@@ -36,7 +36,7 @@ It complements protocol inspectors, observability platforms, security gateways, 
 | **Baseline comparison** | Compare a known-good artifact with a candidate and detect tool, outcome, and run-status regressions. |
 | **CI reports** | Export deterministic comparison findings as JSON, SARIF 2.1.0, or JUnit XML. |
 | **OTLP normalization** | Pure OTLP/JSON adapter for GenAI/MCP-style spans; no network access is opened by the adapter. |
-| **MCP transcript import** | Normalize captured MCP JSON-RPC JSONL into Vouchline events without connecting to a server. |
+| **MCP transcript import** | Normalize captured MCP JSON-RPC JSONL into Vouchline events without connecting to a server; only matched `tools/call` responses become tool outcomes. |
 | **Small core** | Framework-neutral domain layer with adapters kept outside the replay boundary. |
 
 ## Quick start
@@ -123,7 +123,7 @@ make bench
 make demo
 ```
 
-The test suite contains **64 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP and MCP normalization, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.08% coverage** with a 90% enforced floor.
+The test suite contains **65 behavioral tests** covering valid lifecycle paths, malformed records, size limits, nested redaction, token-pattern redaction, tampering, missing and unmatched responses, policy violations, artifact comparison, SARIF/JUnit rendering, OTLP and MCP normalization, MCP response classification, CLI JSON output, exit codes, and the simulation-only replay invariant. The current local quality run reports **94.09% coverage** with a 90% enforced floor.
 
 The benchmark measures verification and simulation replay for 1,000 and 10,000 events:
 

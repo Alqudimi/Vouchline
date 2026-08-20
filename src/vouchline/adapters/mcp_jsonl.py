@@ -45,11 +45,13 @@ def messages_to_events(
     if max_messages < 1:
         raise InputError("max_messages must be positive", details={"max_messages": max_messages})
     events: list[dict[str, Any]] = []
+    pending_tool_calls: set[str] = set()
     for sequence, message in enumerate(messages[:max_messages], start=1):
         call_id = _call_id(message.get("id"))
         method = _method_name(message)
         timestamp = _timestamp(message)
         if method == "tools/call" and call_id is not None:
+            pending_tool_calls.add(call_id)
             events.append(
                 {
                     "event_id": f"mcp-{call_id}-request",
@@ -66,7 +68,12 @@ def messages_to_events(
                 }
             )
             continue
-        if call_id is not None and ("result" in message or "error" in message):
+        if (
+            call_id is not None
+            and call_id in pending_tool_calls
+            and ("result" in message or "error" in message)
+        ):
+            pending_tool_calls.discard(call_id)
             error = message.get("error")
             status = "error" if isinstance(error, dict) else "ok"
             events.append(
