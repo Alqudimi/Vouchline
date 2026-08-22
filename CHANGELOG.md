@@ -2,6 +2,16 @@
 
 All notable changes to Vouchline are documented here.
 
+## [Unreleased]
+
+### Added
+
+- **Budget-aware Policies**: Assert deterministic limits on total cost and total token consumption for verified evidence artifacts.
+- New `max_cost` and `max_total_tokens` fields in `Policy` contract.
+- Automated extraction of usage metrics (`usage.cost`, `usage.total_tokens`) from tool response payloads during policy evaluation.
+- `total_cost` and `total_tokens` reporting in `PolicyReport`.
+- Regression test suite for cost/token policy enforcement and usage extraction.
+
 ## [0.3.2] — 2026-08-20
 
 ### Fixed

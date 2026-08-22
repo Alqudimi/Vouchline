@@ -83,6 +83,8 @@ class Policy(StrictModel):
     max_tool_calls: int | None = Field(default=None, ge=0)
     require_tools: list[str] = Field(default_factory=list)
     deny_statuses: list[str] = Field(default_factory=list)
+    max_cost: float | None = Field(default=None, ge=0.0)
+    max_total_tokens: int | None = Field(default=None, ge=0)
 
 
 class PolicyFinding(StrictModel):
@@ -96,6 +98,8 @@ class PolicyReport(StrictModel):
     passed: bool
     findings: list[PolicyFinding] = Field(default_factory=list)
     tool_call_count: int = Field(ge=0)
+    total_cost: float = Field(default=0.0, ge=0.0)
+    total_tokens: int = Field(default=0, ge=0)
 
 
 class ReplayStep(StrictModel):
