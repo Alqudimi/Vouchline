@@ -149,7 +149,7 @@ JSONL / adapter input
                                       ↘ ReportRenderer
 ```
 
-The core models, canonicalization, redaction, integrity, replay, and policy modules do not depend on a web framework or a model provider. File I/O, the CLI, and OTLP normalization are adapters around those use cases. This keeps the evidence contract reusable by future MCP, hook, SQLite, or object-storage adapters.
+The core models, canonicalization, redaction, integrity, replay, and policy modules do not depend on a web framework or a model provider. File I/O, the CLI, OTLP normalization, and MCP transcript normalization are adapters around those use cases. This keeps the evidence contract reusable by future hook, SQLite, or object-storage adapters.
 
 ## Roadmap
 
