@@ -584,6 +584,8 @@ def test_jsonable_serializes_dates_and_models() -> None:
         "deny_statuses": [],
         "max_tool_calls": 5,
         "require_tools": [],
+        "max_cost": None,
+        "max_total_tokens": None,
     }
     assert dumped == expected
 
